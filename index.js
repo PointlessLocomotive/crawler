@@ -1,8 +1,9 @@
 var config = require('./config');
+var candidates = require('./candidates.js');
+
 var pg = require('pg');
 var async = require('async');
 var OAuth = require('oauth');
-
 var pool = new pg.Pool(config.db);
 
 var oauth = new OAuth.OAuth(
@@ -16,7 +17,8 @@ var oauth = new OAuth.OAuth(
 );
 
 oauth.get(
-  'https://api.twitter.com/1.1/statuses/user_timeline.json?screen_name=a01221116',
+  'https://api.twitter.com/1.1/statuses/user_timeline.json?screen_name='
+  + candidates[0].screen_name,
   config.twitter.token,
   config.twitter.secret,
   function (error, data, response){
