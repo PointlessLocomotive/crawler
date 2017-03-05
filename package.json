@@ -1,0 +1,16 @@
+{
+  "name": "pointlesslocomotive",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "async": "^2.1.5",
+    "oauth": "^0.9.15",
+    "pg": "^6.1.2"
+  }
+}
