@@ -1,7 +1,7 @@
 var candidates = [
   {
     screen_name: 'Eenciso_',
-    political_party:'PAN',
+    political_party:'PPP',
     political_orientation: 'live and let die'
   }
 

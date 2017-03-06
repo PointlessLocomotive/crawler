@@ -17,46 +17,55 @@ var oauth = new OAuth.OAuth(
 );
 
 oauth.get(
-  'https://api.twitter.com/1.1/statuses/user_timeline.json?screen_name='
+  'https://api.twitter.com/1.1/users/show.json?screen_name='
   + candidates[0].screen_name,
   config.twitter.token,
   config.twitter.secret,
-  function (error, data, response){
+  function (error, candidateInfo, response){
     if (error){
       console.error(error);
       return;
     }
-    data = JSON.parse(data);
-    console.log(JSON.stringify(data, 0, 2));
+    candidateInfo = JSON.parse(candidateInfo);
+    console.log(JSON.stringify(candidateInfo, 0, 2));
 
-    async.each(data,
-       function(tweet, callback){
+
          pool.connect(function(err, client, done) {
           if(err) {
             console.error('error fetching client from pool', err);
-            callback(err);
+
           }
-          //INSERT INTO tweets VALUES ('4','2','2','{}',2,2,2,'{}','Tue Feb 07 20:22:42 +0000 2017');
-          client.query('INSERT INTO tweets VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9) ON CONFLICT (tweet_id) DO UPDATE SET favorites_number = excluded.favorites_number, retweets_number = excluded.retweets_number, replies_number = excluded.replies_number;',
-           [tweet.id_str, tweet.user.id_str, tweet.text, tweet.user_mentions, tweet.favorite_count,tweet.retweet_count,0,"{}",tweet.created_at], function(err, result) {
+
+          var multipleInsert =
+          'with new_order as (\
+            insert into candidates values ($1, $2, $3, $4, $5)\
+           ON CONFLICT (candidate_id) DO UPDATE set\
+            candidate_id=excluded.candidate_id\
+            returning candidate_id\
+            )\
+              insert into candidate_stats (candidate_id, follower_number) \
+              values ( (select candidate_id from new_order),\
+            $6);'
+
+          client.query(multipleInsert,
+            [candidateInfo.id_str,
+            candidates[0].screen_name,
+            candidates[0].political_party,
+            candidateInfo.profile_image_url_https,
+            candidates[0].political_orientantion,
+            candidateInfo.followers_count ], function(err, result) {
             //call `done(err)` to release the client back to the pool (or destroy it if there is an error)
             done(err);
 
             if(err) {
               console.error('error running query', err);
-              callback(err);
+
             }
             console.log(result);
-            //output: 1
-            callback();
-          });
+            process.exit(0);
+
         });
-
-
-
-
-       },
-      function(err){
+      });
       // if any of the saves produced an error, err would equal that error
       pool.on('error', function (err, client) {
       // if an error is encountered by a client while it sits idle in the pool
@@ -66,11 +75,9 @@ oauth.get(
       // between your application and the database, the database restarts, etc.
       // and so you might want to handle it and at least log it out
         console.error('idle client error', err.message, err.stack)
-      });
-      if(err){
-        console.log(err);
-      }
-      process.exit(0);
+        process.exit(1);
+
+
 
     });
 
