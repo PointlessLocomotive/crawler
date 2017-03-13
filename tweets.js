@@ -5,7 +5,7 @@ var pg = require('pg');
 var async = require('async');
 var OAuth = require('oauth');
 var pool = new pg.Pool(config.db);
-
+var user = process.argv[2];
 var oauth = new OAuth.OAuth(
   'https://api.twitter.com/oauth/request_token',
   'https://api.twitter.com/oauth/access_token',
@@ -17,8 +17,8 @@ var oauth = new OAuth.OAuth(
 );
 
 oauth.get(
-  'https://api.twitter.com/1.1/statuses/user_timeline.json?screen_name='
-  + candidates[0].screen_name,
+  'https://api.twitter.com/1.1/statuses/user_timeline.json?user_id='
+  + user,
   config.twitter.token,
   config.twitter.secret,
   function (error, data, response){
@@ -27,7 +27,33 @@ oauth.get(
       return;
     }
     data = JSON.parse(data);
-    console.log(JSON.stringify(data, 0, 2));
+    //if profile photo is the default ignore this user
+        if(data[0].user.default_profile_image){
+
+      pool.connect(function(err, client, done) {
+       if(err) {
+         console.error('error fetching client from pool', err);
+         callback(err);
+       }
+
+       client.query('UPDATE followers SET useful=FALSE WHERE follower_id=$1;',
+        [user], function(err, result) {
+         //call `done(err)` to release the client back to the pool (or destroy it if there is an error)
+         done(err);
+
+         if(err) {
+           console.error('error running query', err);
+
+         }
+         console.log(result);
+         //output: 1
+         process.exit(0);
+       });
+     });
+
+
+    }
+    //console.log(JSON.stringify(data, 0, 2));
 
     async.each(data,
        function(tweet, callback){

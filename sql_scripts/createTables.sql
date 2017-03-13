@@ -1,5 +1,5 @@
 
---CREATE EXTENSION pgcrypto;  -- allows usage of UUID in candidate_stats table
+CREATE EXTENSION pgcrypto;  -- allows usage of UUID in candidate_stats table
 
 CREATE TABLE candidates
 (
@@ -37,5 +37,6 @@ CREATE TABLE followers
 (
 	candidate_id VARCHAR REFERENCES candidates(candidate_id),
 	follower_id VARCHAR NOT NULL,
+	useful BOOLEAN DEFAULT TRUE,
 	PRIMARY KEY(candidate_id, follower_id)
 );

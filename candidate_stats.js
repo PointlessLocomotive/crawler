@@ -17,8 +17,8 @@ var oauth = new OAuth.OAuth(
 );
 
 oauth.get(
-  'https://api.twitter.com/1.1/users/show.json?screen_name='
-  + candidates[0].screen_name,
+  'https://api.twitter.com/1.1/users/show.json?user_id='
+  + process.argv[2],
   config.twitter.token,
   config.twitter.secret,
   function (error, candidateInfo, response){
@@ -27,7 +27,7 @@ oauth.get(
       return;
     }
     candidateInfo = JSON.parse(candidateInfo);
-    console.log(JSON.stringify(candidateInfo, 0, 2));
+    //console.log(JSON.stringify(candidateInfo, 0, 2));
 
 
          pool.connect(function(err, client, done) {
@@ -49,7 +49,7 @@ oauth.get(
 
           client.query(multipleInsert,
             [candidateInfo.id_str,
-            candidates[0].screen_name,
+            candidateInfo.screen_name,
             candidates[0].political_party,
             candidateInfo.profile_image_url_https,
             candidates[0].political_orientantion,
