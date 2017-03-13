@@ -14,45 +14,45 @@
 //     db.close();
 // });
 
-// var pg = require('pg');
-// var candidates = require('./candidates.js');
-// var childProcess = require('child_process');
-// var async = require('async');
+var pg = require('pg');
+var candidates = require('./candidates.js');
+var childProcess = require('child_process');
+var async = require('async');
 var schedule = require('node-schedule');
-// var cursorArray = [];
-// cursorArray.push(-1);
-// var apiCallsCount = 0;
-//
-// function runScript(scriptPath, argv, callback) {
-//
-//     // keep track of whether callback has been invoked to prevent multiple invocations
-//     var invoked = false;
-//
-//     var process = childProcess.fork(scriptPath, argv);
-//
-//     // listen for errors as they may prevent the exit event from firing
-//     process.on('error', function (err) {
-//         if (invoked) return;
-//         invoked = true;
-//         callback(err);
-//     });
-//
-//     // execute the callback once the process has finished running
-//     process.on('exit', function (code) {
-//         if (invoked) return;
-//         invoked = true;
-//         var err = code === 0 ? null : new Error('exit code ' + code);
-//         callback(err);
-//     });
-//
-//     process.on('message', function (msg){
-//       console.log('message from child: ' + require('util').inspect(msg));
-//       //save msg into mongodb
-//       cursorArray.push(msg.cursor);
-//       apiCallsCount = msg.apiCalls;
-//     });
-//
-// }
+var cursorArray = [];
+cursorArray.push(-1);
+var apiCallsCount = 0;
+
+function runScript(scriptPath, argv, callback) {
+
+    // keep track of whether callback has been invoked to prevent multiple invocations
+    var invoked = false;
+
+    var process = childProcess.fork(scriptPath, argv);
+
+    // listen for errors as they may prevent the exit event from firing
+    process.on('error', function (err) {
+        if (invoked) return;
+        invoked = true;
+        callback(err);
+    });
+
+    // execute the callback once the process has finished running
+    process.on('exit', function (code) {
+        if (invoked) return;
+        invoked = true;
+        var err = code === 0 ? null : new Error('exit code ' + code);
+        callback(err);
+    });
+
+    process.on('message', function (msg){
+      console.log('message from child: ' + require('util').inspect(msg));
+      //save msg into mongodb
+      cursorArray.push(msg.cursor);
+      apiCallsCount = msg.apiCalls;
+    });
+
+}
 
 /*
 // Now we can run a script and invoke a callback when complete, e.g.
@@ -121,52 +121,52 @@ async.during(
 // run four times
 // limit 15 from tweeter
 
-// var count_followers = 0;
-// async.during(
-//     function (callbackFollowers) {
-//         return callbackFollowers(null, count_followers < candidates.length);
-//     },
-//     function (callbackFollowers) {
-//         // run candidate stats
-//         //run this four times
-//
-//         async.during(
-//
-//           function (callbackSchedule) {
-//             runScript('./followers.js', [ candidates[count_followers].user_id, cursorArray.pop(), apiCallsCount], function (err) {
-//               if (err) throw err;
-//               console.log('finished running internal followers.js');
-//               console.log(cursorArray);
-//               if(cursorArray[0] == 0){
-//                 count_followers++;
-//                 cursorArray.pop();
-//                 cursorArray.push(-1);
-//                 return callbackFollowers();
-//               }
-//               return callbackSchedule(null, cursorArray[0] != 0);
-//             });
-//           },
-//           function (callbackSchedule) {
-//             console.log('Callback function running wait 15 min');
-//             schedule.scheduleJob('*/17 * * * *', function() {
-//               console.log('starting again!, api counts = 0')
-//               apiCallsCount=0;
-//               runScript('./followers.js', [ candidates[count_followers].user_id, cursorArray.pop(), apiCallsCount], function (err) {
-//                 if (err) t  hrow err;
-//                 console.log('finished running followers.js');
-//
-//                 return callbackSchedule();
-//               });
-//             });
-//           }
-//
-//         );
-//
-//
-//
-//     }
-// );
-//
+var count_followers = 0;
+async.during(
+    function (callbackFollowers) {
+        return callbackFollowers(null, count_followers < candidates.length);
+    },
+    function (callbackFollowers) {
+        // run candidate stats
+        //run this four times
+
+        async.during(
+
+          function (callbackSchedule) {
+            runScript('./followers.js', [ candidates[count_followers].user_id, cursorArray.pop(), apiCallsCount], function (err) {
+              if (err) throw err;
+              console.log('finished running internal followers.js');
+              console.log(cursorArray);
+              if(cursorArray[0] == 0){
+                count_followers++;
+                cursorArray.pop();
+                cursorArray.push(-1);
+                return callbackFollowers();
+              }
+              return callbackSchedule(null, cursorArray[0] != 0);
+            });
+          },
+          function (callbackSchedule) {
+            console.log('Callback function running wait 15 min');
+            schedule.scheduleJob('*/17 * * * *', function() {
+              console.log('starting again!, api counts = 0')
+              apiCallsCount=0;
+              runScript('./followers.js', [ candidates[count_followers].user_id, cursorArray.pop(), apiCallsCount], function (err) {
+                if (err) t  hrow err;
+                console.log('finished running followers.js');
+
+                return callbackSchedule();
+              });
+            });
+          }
+
+        );
+
+
+
+    }
+);
+
 
 /*
 
