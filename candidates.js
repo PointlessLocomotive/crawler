@@ -1,12 +1,12 @@
 var candidates = [
   {
-    user_id: '993485179',
+    user_id: '20167623',
     screen_name: '',
     political_party:'PPP',
     political_orientation: 'live and let die'
-  },
+  }/*, del mazo,2
   {
-    user_id: '67118823',
+    user_id: '39860797',
     screen_name: '',
     political_party:'PPP',
     political_orientation: 'live and let die'
@@ -16,7 +16,7 @@ var candidates = [
     screen_name: '',
     political_party:'PPP',
     political_orientation: 'live and let die'
-  }
+  }*/
 
 ];
 

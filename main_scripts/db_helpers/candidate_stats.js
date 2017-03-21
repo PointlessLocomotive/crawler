@@ -1,5 +1,5 @@
-var config = require('./config');
-var candidates = require('./candidates.js');
+var config = require('../../config');
+var candidates = require('../../candidates.js');
 
 var pg = require('pg');
 var async = require('async');

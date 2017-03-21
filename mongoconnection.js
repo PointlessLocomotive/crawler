@@ -148,16 +148,35 @@ async.during(
           },
           function (callbackSchedule) {
             console.log('Callback function running wait 15 min');
-            schedule.scheduleJob('*/17 * * * *', function() {
-              console.log('starting again!, api counts = 0')
-              apiCallsCount=0;
+            // schedule.scheduleJob('*/17 * * * *', function() {
+            //   console.log('starting again!, api counts = 0')
+            //   apiCallsCount=0;
+            //   runScript('./followers.js', [ candidates[count_followers].user_id, cursorArray.pop(), apiCallsCount], function (err) {
+            //     if (err) t  hrow err;
+            //     console.log('finished running followers.js');
+            //
+            //     return callbackSchedule();
+            //   });
+            // });
+            console.log('starting in 15min');
+            var minutes = 15, the_interval = minutes * 60 * 1000;
+            setInterval(function() {
+              console.log("starting now, timenow: " + new Date().getSeconds());
+              apiCallsCount = 0;
+              return callbackSchedule();
+              
+              // do your stuff here
+/*
               runScript('./followers.js', [ candidates[count_followers].user_id, cursorArray.pop(), apiCallsCount], function (err) {
-                if (err) t  hrow err;
-                console.log('finished running followers.js');
+                if (err) throw err;
+                console.log('finished running internal followers.js');
 
                 return callbackSchedule();
-              });
-            });
+              });*/
+
+
+
+            }, the_interval);
           }
 
         );
@@ -184,8 +203,9 @@ runScript('./tweets.js', [ candidates[0].user_id], function (err) {
 });
 */
 
-
+/*
 schedule.scheduleJob('/1 * * * * *', function() {
 //               console.log('starting again!, api counts = 0')
 console.log('hola');
 });
+*/

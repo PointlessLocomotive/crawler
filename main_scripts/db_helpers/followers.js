@@ -1,14 +1,10 @@
-var config = require('./config');
-var candidates = require('./candidates.js');
+var config = require('../../config');
+var candidates = require('../../candidates.js');
 
 var pg = require('pg');
 var async = require('async');
 var OAuth = require('oauth');
 var pool = new pg.Pool(config.db);
-//var Pool = require('pg').Pool;
-
-//var pool = new Pool(config.db);
-
 
 
 var oauth = new OAuth.OAuth(
