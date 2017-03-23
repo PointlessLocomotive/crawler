@@ -6,6 +6,7 @@ var getCandidates = require('./main_scripts/get_candidates.js');
 var getTweetsFromCandidates  = require('./main_scripts/get_tweets_from_candidates.js');
 var getFollowersFromCandidates = require('./main_scripts/get_followers_from_candidates.js');
 
+
 async.series([
     function(callback) {
         console.log('getting candidates...')
@@ -21,11 +22,15 @@ async.series([
       });
     },
     function(callback){
-      callback(null, 'tweets from candidates saved no implemented')
+      getTweetsFromCandidates(function(){
+        
+        callback(null, 'tweets from candidates saved no implemented')
+      });
     }
 ],
 // optional callback
 function(err, results) {
-    // results is now equal to ['one', 'two']
+
     console.log(results);
+    process.exit(0);
 });
