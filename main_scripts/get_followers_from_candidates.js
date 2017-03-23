@@ -42,45 +42,48 @@ function runScript(scriptPath, argv, callback) {
 
 
 
+module.exports = function(endCallback){
 
-async.during(
-    function (callbackFollowers) {
-        return callbackFollowers(null, count_followers < candidates.length);
-    },
-    function (callbackFollowers) {
-        // run candidate stats
-        //run this four times
-        async.during(
+  async.during(
+      function (callbackFollowers) {
+          return callbackFollowers(null, count_followers < candidates.length);
+      },
+      function (callbackFollowers) {
+          // run candidate stats
+          //run this four times
+          async.during(
 
-          function (callbackSchedule) {
-            runScript('./main_scripts/db_helpers/followers.js', [ candidates[count_followers].user_id, cursorArray.pop(), apiCallsCount], function (err) {
-              if (err) throw err;
-              console.log('finished running internal followers.js');
-              console.log(cursorArray);
-              if(cursorArray[0] == 0){
-                count_followers++;
-                cursorArray.pop();
-                cursorArray.push(-1);
-                if(count_followers === candidates.length){
-                  process.exit(0);
+            function (callbackSchedule) {
+              runScript('./main_scripts/db_helpers/followers.js', [ candidates[count_followers].user_id, cursorArray.pop(), apiCallsCount], function (err) {
+                if (err) throw err;
+                console.log('finished running internal followers.js');
+                console.log(cursorArray);
+                if(cursorArray[0] == 0){
+                  count_followers++;
+                  cursorArray.pop();
+                  cursorArray.push(-1);
+                  if(count_followers === candidates.length){
+                    endCallback();
+                  }
+                  return callbackFollowers();
                 }
-                return callbackFollowers();
-              }
-              return callbackSchedule(null, cursorArray[0] != 0);
-            });
-          },
-          function (callbackSchedule) {
-            console.log('Callback function running wait 15 min');
+                return callbackSchedule(null, cursorArray[0] != 0);
+              });
+            },
+            function (callbackSchedule) {
+              console.log('Callback function running wait 15 min');
 
-            console.log('starting in 15min');
-            var minutes = 15, waitingInterval = minutes * 60 * 1000;
-            setInterval(function() {
-              console.log("starting now, timenow: " + new Date().getSeconds());
-              apiCallsCount = 0;
-              return callbackSchedule();
-            }, waitingInterval);
-          }
+              console.log('starting in 15min');
+              var minutes = 15, waitingInterval = minutes * 60 * 1000;
+              setInterval(function() {
+                console.log("starting now, timenow: " + new Date().getSeconds());
+                apiCallsCount = 0;
+                return callbackSchedule();
+              }, waitingInterval);
+            }
 
-        );
-    }
-);
+          );
+      }
+  );
+
+}
