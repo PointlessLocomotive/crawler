@@ -1,0 +1,2 @@
+
+ALTER TABLE followers ADD COLUMN id SERIAL KEY;
