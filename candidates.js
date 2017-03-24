@@ -4,7 +4,7 @@ var candidates = [
     screen_name: '',
     political_party:'PPP',
     political_orientation: '@kdnuggets'
-  }
+  },
   {
     user_id: '16024029',
     screen_name: '',
