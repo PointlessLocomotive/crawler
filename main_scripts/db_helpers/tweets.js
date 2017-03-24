@@ -16,19 +16,24 @@ var oauth = new OAuth.OAuth(
   'HMAC-SHA1'
 );
 
+var url ='https://api.twitter.com/1.1/statuses/user_timeline.json?user_id='
++ user;
 oauth.get(
-  'https://api.twitter.com/1.1/statuses/user_timeline.json?user_id='
-  + user,
+  url,
   config.twitter.token,
   config.twitter.secret,
   function (error, data, response){
     if (error){
-      console.error(error);
+      var finalError = {};
+      finalError.twitterError = error;
+      finalError.url = url;
+      console.error(finalError);
       return;
     }
     data = JSON.parse(data);
     //if profile photo is the default ignore this user
-        if(data[0].user.default_profile_image){
+
+    if(data[0].user.default_profile_image){
 
       pool.connect(function(err, client, done) {
        if(err) {
@@ -45,6 +50,7 @@ oauth.get(
            console.error('error running query', err);
 
          }
+
          console.log(result);
          //output: 1
          process.exit(0);
@@ -94,7 +100,10 @@ oauth.get(
         console.error('idle client error', err.message, err.stack)
       });
       if(err){
-        console.log(err);
+        var error = {};
+        error.twitterError = err;
+        error.url = url;
+        console.log(error);
       }
       process.exit(0);
 
