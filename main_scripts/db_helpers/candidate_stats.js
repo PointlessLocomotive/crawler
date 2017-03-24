@@ -61,7 +61,8 @@ oauth.get(
               console.error('error running query', err);
 
             }
-            console.log(result);
+            //console.log(result);
+            console.log(candidateInfo.screen_name + ' saved!');
             process.exit(0);
 
         });

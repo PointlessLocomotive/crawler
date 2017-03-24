@@ -17,7 +17,7 @@ var oauth = new OAuth.OAuth(
 );
 
 var url ='https://api.twitter.com/1.1/statuses/user_timeline.json?user_id='
-+ user;
++ user+'&count=200';
 oauth.get(
   url,
   config.twitter.token,
@@ -27,7 +27,7 @@ oauth.get(
       var finalError = {};
       finalError.twitterError = error;
       finalError.url = url;
-      console.error(finalError);
+      console.log(finalError);
       return;
     }
     data = JSON.parse(data);
@@ -48,10 +48,8 @@ oauth.get(
 
          if(err) {
            console.error('error running query', err);
-
          }
-
-         console.log(result);
+         console.log(user + ' is not useful');
          //output: 1
          process.exit(0);
        });
@@ -78,15 +76,11 @@ oauth.get(
               console.error('error running query', err);
               callback(err);
             }
-            console.log(result);
+            //console.log(result);
             //output: 1
             callback();
           });
         });
-
-
-
-
        },
       function(err){
       // if any of the saves produced an error, err would equal that error
@@ -105,6 +99,7 @@ oauth.get(
         error.url = url;
         console.log(error);
       }
+      console.log(data.length + ' tweets saved!');
       process.exit(0);
 
     });

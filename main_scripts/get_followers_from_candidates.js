@@ -57,6 +57,7 @@ module.exports = function(endCallback){
               runScript('./main_scripts/db_helpers/followers.js', [ candidates[count_followers].user_id, cursorArray.pop(), apiCallsCount], function (err) {
                 if (err) throw err;
                 console.log('finished running internal followers.js');
+                console.log('cursor:')
                 console.log(cursorArray);
                 if(cursorArray[0] == 0){
                   count_followers++;

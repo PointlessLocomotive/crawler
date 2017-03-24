@@ -41,6 +41,7 @@ module.exports = function(endCallback){
           count_tweets++;
           console.log();
           if(count_tweets%899===0){
+            console.log('limit reached, starting in 15 min')
             var minutes = 15, waitingInterval = minutes * 60 * 1000;
             setInterval(function() {
 

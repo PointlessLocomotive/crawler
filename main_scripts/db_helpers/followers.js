@@ -55,7 +55,7 @@ async.during(
           apiCallsCount++;
           //console.log(cursor);
           tmpCursors.push(cursor);
-          console.log(followersData.ids.length);
+          //console.log(followersData.ids.length);
           currentFollowers=currentFollowers.concat(followersData.ids);
 
           callback();
@@ -70,7 +70,7 @@ async.during(
         //console.log(tmpCursors);
         //console.log(followersArray.pop());
         //save current cursor and user
-        console.log(currentFollowers.length);
+        console.log('about to save '+currentFollowers.length+' followers data');
         async.each(currentFollowers, function(follower, callback){
 
 

@@ -8,6 +8,9 @@ module.exports = function(endCallback){
   console.log('running get_candidates.js');
   async.during(
       function (callback) {
+        if(count_candidates>= candidates.length){
+          endCallback();
+        }
           return callback(null, count_candidates < candidates.length);
       },
       function (callback) {
@@ -18,7 +21,7 @@ module.exports = function(endCallback){
             if (err) throw err;
             console.log('finished running candidate_stats.js');
             callback();
-            endCallback();
+
           });
       }
   );

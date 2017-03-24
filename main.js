@@ -8,25 +8,25 @@ var getFollowersFromCandidates = require('./main_scripts/get_followers_from_cand
 var getTweetsFromFollowers = require ('./main_scripts/get_tweets_from_followers.js');
 
 async.series([
-    function(callback) {
+  /*
+  function(callback) {
         console.log('getting candidates...')
         getCandidates(function(){
           console.log('all candidates info is saved!')
           callback(null, 'candidates info saved');
         });
-    },
+  },
+  function(callback){
+    getTweetsFromCandidates(function(){
+    callback(null, 'tweets from candidates saved')
+    });
+  },
     function(callback) {
       getFollowersFromCandidates(function(){
         console.log('all followers saved');
         callback(null, 'followers from candidates saved');
       });
-    },
-    function(callback){
-      getTweetsFromCandidates(function(){
-
-        callback(null, 'tweets from candidates saved')
-      });
-    },
+    },*/
     function(callback){
       getTweetsFromFollowers(function(){
 
