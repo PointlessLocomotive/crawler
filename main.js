@@ -8,7 +8,7 @@ var getFollowersFromCandidates = require('./main_scripts/get_followers_from_cand
 var getTweetsFromFollowers = require ('./main_scripts/get_tweets_from_followers.js');
 
 async.series([
-  /*
+
   function(callback) {
         console.log('getting candidates...')
         getCandidates(function(){
@@ -26,7 +26,7 @@ async.series([
         console.log('all followers saved');
         callback(null, 'followers from candidates saved');
       });
-    },*/
+    },
     function(callback){
       getTweetsFromFollowers(function(){
 

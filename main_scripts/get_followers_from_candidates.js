@@ -75,7 +75,7 @@ module.exports = function(endCallback){
               console.log('Callback function running wait 15 min');
 
               console.log('starting in 15min');
-              var minutes = 15, waitingInterval = minutes * 60 * 1000;
+              var minutes = 17, waitingInterval = minutes * 60 * 1000;
               setInterval(function() {
                 console.log("starting now, timenow: " + new Date().getSeconds());
                 apiCallsCount = 0;

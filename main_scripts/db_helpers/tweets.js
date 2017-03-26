@@ -24,11 +24,31 @@ oauth.get(
   config.twitter.secret,
   function (error, data, response){
     if (error){
-      var finalError = {};
-      finalError.twitterError = error;
-      finalError.url = url;
-      console.log(finalError);
-      return;
+      pool.connect(function(err, client, done) {
+       if(err) {
+         console.error('error fetching client from pool', err);
+         callback(err);
+       }
+
+       client.query('UPDATE followers SET useful=FALSE WHERE follower_id=$1;',
+        [user], function(err, result) {
+         //call `done(err)` to release the client back to the pool (or destroy it if there is an error)
+         done(err);
+
+         if(err) {
+           console.error('error running query', err);
+         }
+         console.log(user + ' is not useful');
+         //output: 1
+         var finalError = {};
+         finalError.twitterError = error;
+         finalError.url = url;
+         console.log(finalError);
+         return;
+
+       });
+     });
+
     }
     data = JSON.parse(data);
     //if profile photo is the default ignore this user
