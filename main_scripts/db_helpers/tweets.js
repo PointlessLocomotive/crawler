@@ -23,6 +23,7 @@ oauth.get(
   config.twitter.token,
   config.twitter.secret,
   function (error, data, response){
+
     if (error){
       pool.connect(function(err, client, done) {
        if(err) {
@@ -76,7 +77,13 @@ oauth.get(
      });
 
 
-    }
+   }
+   if(data[0]=== undefined){
+     console.log('user error');
+     console.log(data);
+     console.log('invalid user: '+ user);
+     process.exit(0);
+   }
     //console.log(JSON.stringify(data, 0, 2));
 
     async.each(data,
