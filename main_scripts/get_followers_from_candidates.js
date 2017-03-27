@@ -1,5 +1,6 @@
 var async = require('async');
 var path = require('path');
+var moment = require('moment');
 var childProcess = require('child_process');
 var utils = require('./run_script.js');
 var candidates = require('../candidates.js');
@@ -54,6 +55,7 @@ module.exports = function(endCallback){
           async.during(
 
             function (callbackSchedule) {
+              console.log('candidate: '+(count_followers+1) + ' out of '+ candidates.length);
               runScript('./main_scripts/db_helpers/followers.js', [ candidates[count_followers].user_id, cursorArray.pop(), apiCallsCount], function (err) {
                 if (err) throw err;
                 console.log('finished running internal followers.js');
@@ -72,12 +74,14 @@ module.exports = function(endCallback){
               });
             },
             function (callbackSchedule) {
-              console.log('Callback function running wait 15 min');
-
+              console.log('candidate: '+(count_followers+1) + ' out of '+ candidates.length);
+              console.log('finished at: '+ moment().format('MMMM Do YYYY, h:mm:ss a'));
               console.log('starting in 15min');
+              console.log('will start at: '+ moment().add(15,'m').format('MMMM Do YYYY, h:mm:ss a'));
+
               var minutes = 17, waitingInterval = minutes * 60 * 1000;
               setInterval(function() {
-                console.log("starting now, timenow: " + new Date().getSeconds());
+                console.log("starting now, timenow: " + moment().format('MMMM Do YYYY, h:mm:ss a'));
                 apiCallsCount = 0;
                 return callbackSchedule();
               }, waitingInterval);
