@@ -32,6 +32,7 @@ module.exports = function(endCallback){
       async.during(
         function(callback){
           console.log(count_tweets);
+          console.log('about to search this user: '+ result.rows[count_tweets].follower_id);
           utils.runScript('./main_scripts/db_helpers/tweets.js', [ result.rows[count_tweets].follower_id ], function (err){
             return callback(null, count_tweets < result.rows.length);
           });

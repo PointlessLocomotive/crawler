@@ -53,37 +53,53 @@ oauth.get(
     }
     data = JSON.parse(data);
     //if profile photo is the default ignore this user
+    try{
 
-    if(data[0].user.default_profile_image){
 
-      pool.connect(function(err, client, done) {
-       if(err) {
-         console.error('error fetching client from pool', err);
-         callback(err);
-       }
+      if(data[0].user.default_profile_image){
 
-       client.query('UPDATE followers SET useful=FALSE WHERE follower_id=$1;',
-        [user], function(err, result) {
-         //call `done(err)` to release the client back to the pool (or destroy it if there is an error)
-         done(err);
-
+        pool.connect(function(err, client, done) {
          if(err) {
-           console.error('error running query', err);
+           console.error('error fetching client from pool', err);
+           callback(err);
          }
-         console.log(user + ' is not useful');
-         //output: 1
-         process.exit(0);
+
+         client.query('UPDATE followers SET useful=FALSE WHERE follower_id=$1;',
+          [user], function(err, result) {
+           //call `done(err)` to release the client back to the pool (or destroy it if there is an error)
+           done(err);
+
+           if(err) {
+             console.error('error running query', err);
+           }
+           console.log(user + ' is not useful');
+           //output: 1
+           process.exit(0);
+         });
        });
-     });
+     }
+   }catch(e){
+     pool.connect(function(err, client, done) {
+      if(err) {
+        console.error('error fetching client from pool', err);
+        callback(err);
+      }
 
+      client.query('UPDATE followers SET useful=FALSE WHERE follower_id=$1;',
+       [user], function(err, result) {
+        //call `done(err)` to release the client back to the pool (or destroy it if there is an error)
+        done(err);
 
-   }
-   if(data[0]=== undefined){
-     console.log('user error');
-     console.log(data);
-     console.log('invalid user: '+ user);
-     process.exit(0);
-   }
+        if(err) {
+          console.error('error running query', err);
+        }
+        console.log(user + ' is not useful');
+        //output: 1
+        process.exit(0);
+      });
+    });
+     }
+
     //console.log(JSON.stringify(data, 0, 2));
 
     async.each(data,
