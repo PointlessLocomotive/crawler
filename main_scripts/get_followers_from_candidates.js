@@ -29,6 +29,7 @@ function runScript(scriptPath, argv, callback) {
         if (invoked) return;
         invoked = true;
         var err = code === 0 ? null :null;
+        console.log('Exit code: ' + code);
         callback(err);
     });
 
