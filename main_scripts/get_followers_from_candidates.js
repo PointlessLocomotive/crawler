@@ -28,7 +28,7 @@ function runScript(scriptPath, argv, callback) {
     process.on('exit', function (code) {
         if (invoked) return;
         invoked = true;
-        var err = code === 0 ? null : new Error('exit code ' + code);
+        //var err = code === 0 ? null : new Error('exit code ' + code);
         callback(err);
     });
 
